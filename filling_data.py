@@ -1,5 +1,5 @@
-from config import config
-from utils import get_employers_data, get_vacancies_data, save_data_to_employers, save_data_to_vacancies
+from src.config import config
+from src.utils import get_employers_data, get_vacancies_data, save_data_to_employers, save_data_to_vacancies
 
 
 # id компаний

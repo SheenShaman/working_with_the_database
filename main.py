@@ -1,6 +1,6 @@
-from config import config
-from database_manager import DBManager
-from utils import get_all_companies, get_all_vacancies, get_vacancies_with_higher_salary, get_vacancies_with_keyword
+from src.config import config
+from src.database_manager import DBManager
+from src.utils import get_all_companies, get_all_vacancies, get_vacancies_with_higher_salary, get_vacancies_with_keyword
 
 
 def main():
@@ -14,7 +14,7 @@ def main():
 2 - Вывести список всех вакансий с указанием названия компании, названия вакансии, зарплаты и ссылки на вакансию
 3 - Вывести среднюю зарплату по всем вакансиям
 4 - Вывести список всех вакансий, у которых зарплата выше средней
-5 - Вывести список всех вакансий, по ключевому слову""")
+5 - Вывести список всех вакансий, по ключевому слову\n""")
 
     user_choice = input('Введите число нужного запроса:\n')
     if user_choice == '1':
