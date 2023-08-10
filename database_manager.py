@@ -73,7 +73,7 @@ class DBManager:
 
     def get_vacancies_with_keyword(self, keyword: str):
         """ Получает список всех вакансий,
-        в названии которых содержатся переданные в метод слова, например 'python' """
+        в названии которых содержатся переданные в метод слова """
 
         conn = psycopg2.connect(database='hh_info', **self.params)
 

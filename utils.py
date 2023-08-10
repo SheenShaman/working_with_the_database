@@ -113,6 +113,40 @@ def save_data_to_vacancies(vacancy_list: list, params: dict) -> None:
     conn.close()
 
 
+def get_companies_and_vacancies_count(db_manager):
+    """ Выводит список всех компаний и количество вакансий у каждой компании """
+    employers = db_manager.get_companies_and_vacancies_count()
+    for employer in employers:
+        print(employer)
+
+
+def get_all_vacancies(db_manager):
+    """ Выводит список всех вакансий с указанием названия компании,
+        названия вакансии и зарплаты и ссылки на вакансию """
+
+    vacancies = db_manager.get_all_vacancies()
+    for vacancy in vacancies:
+        print(vacancy)
+
+
+def get_vacancies_with_higher_salary(db_manager):
+    """ Выводит список всех вакансий,
+        у которых зарплата выше средней по всем вакансиям """
+
+    vacancies = db_manager.get_vacancies_with_higher_salary()
+    for vacancy in vacancies:
+        print(vacancy)
+
+
+def get_vacancies_with_keyword(db_manager):
+    """ Получает список всех вакансий,
+        в названии которых содержатся переданные в метод слова """
+    keyword = input('Введите слово для поискового запроса\n')
+    filtered_vacancies = db_manager.get_vacancies_with_keyword(keyword)
+    for vacancy in filtered_vacancies:
+        print(vacancy)
+
+
 
 # employer = ['Сбер', 'Яндекс', 'Альфа-Банк', 'VK', 'Тинькофф', 'Газпром нефть', 'МТС', 'Tele2', 'X5 Group', 'Ozon']
 employer_id = ['3529', '1740', '80', '15478', '78638', '39305', '3776', '4219', '4233', '2180']
