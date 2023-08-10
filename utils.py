@@ -1,6 +1,5 @@
 import requests
 import psycopg2
-from config import config
 
 
 def get_employers_data(emp_ids: list) -> list:
@@ -13,7 +12,6 @@ def get_employers_data(emp_ids: list) -> list:
     for id in emp_ids:
         url = f"https://api.hh.ru/employers/{id}"
         response = requests.get(url).json()
-        # можно добавить исключение (if response.status_code != 200: raise DataError)
         employer_data.append(response)
 
     for item in employer_data:
@@ -55,7 +53,6 @@ def get_vacancies_data(emp_ids: list) -> list:
             'only_with_salary': True
         }
         response = requests.get(url, params=params).json()['items']
-        # можно добавить исключение (if response.status_code != 200: raise DataError)
         vacancy_data.append(response)
 
     for item in vacancy_data:
@@ -113,7 +110,7 @@ def save_data_to_vacancies(vacancy_list: list, params: dict) -> None:
     conn.close()
 
 
-def get_companies_and_vacancies_count(db_manager):
+def get_all_companies(db_manager):
     """ Выводит список всех компаний и количество вакансий у каждой компании """
     employers = db_manager.get_companies_and_vacancies_count()
     for employer in employers:
@@ -141,22 +138,7 @@ def get_vacancies_with_higher_salary(db_manager):
 def get_vacancies_with_keyword(db_manager):
     """ Получает список всех вакансий,
         в названии которых содержатся переданные в метод слова """
-    keyword = input('Введите слово для поискового запроса\n')
+    keyword = input('Введите слово для поискового запроса:\n')
     filtered_vacancies = db_manager.get_vacancies_with_keyword(keyword)
     for vacancy in filtered_vacancies:
         print(vacancy)
-
-
-
-# employer = ['Сбер', 'Яндекс', 'Альфа-Банк', 'VK', 'Тинькофф', 'Газпром нефть', 'МТС', 'Tele2', 'X5 Group', 'Ozon']
-employer_id = ['3529', '1740', '80', '15478', '78638', '39305', '3776', '4219', '4233', '2180']
-
-emp = get_employers_data(employer_id) # json_employers
-vac = get_vacancies_data(employer_id) # json_vacancies
-#print(emp)
-#print(vac)
-
-params = config()
-save_emp = save_data_to_employers(emp, params)
-save_vac = save_data_to_vacancies(vac, params)
-

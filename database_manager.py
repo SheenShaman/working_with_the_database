@@ -48,10 +48,10 @@ class DBManager:
                     SELECT AVG((salary_from + salary_to)/2) 
                     FROM vacancies
                     """)
-            result = cur.fetchall()
+            result = cur.fetchone()
         conn.commit()
         conn.close()
-        return result
+        return round(int(result[0]))
 
     def get_vacancies_with_higher_salary(self):
         """ Получает список всех вакансий,
