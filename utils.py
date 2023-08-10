@@ -1,4 +1,6 @@
 import requests
+import psycopg2
+from config import config
 
 
 def get_employers_data(emp_ids: list) -> list:
@@ -41,10 +43,10 @@ def get_vacancies_data(emp_ids: list) -> list:
         Возвращает информацию о вакансиях """
 
     vacancy_data = []
-    vacancies = []
+    vacancy_list = []
 
     url = "https://api.hh.ru/vacancies/"
-    for i in range(10):
+    for i in range(20):
         params = {
             'page': i,
             'per_page': 100,
@@ -68,12 +70,59 @@ def get_vacancies_data(emp_ids: list) -> list:
                    'currency': currency,
                    'url': vacancy['alternate_url']
                    }
-            vacancies.append(vac)
-    return vacancies
+            vacancy_list.append(vac)
+    return vacancy_list
+
+
+def save_data_to_employers(employer_list: list, params: dict) -> None:
+    """ Сохранение данных в таблицу employers """
+
+    conn = psycopg2.connect(database='hh_info', **params)
+
+    with conn.cursor() as cur:
+        for employer in employer_list:
+            cur.execute('INSERT INTO employers VALUES (%s, %s, %s, %s)', (
+                employer['employer_id'],
+                employer['employer_name'],
+                employer['url'],
+                employer['vacancies']
+
+            ))
+    conn.commit()
+    conn.close()
+
+
+def save_data_to_vacancies(vacancy_list: list, params: dict) -> None:
+    """ Сохранение данных в таблицу vacancies """
+    conn = psycopg2.connect(database='hh_info', **params)
+
+    with conn.cursor() as cur:
+        for vacancy in vacancy_list:
+            cur.execute('INSERT INTO vacancies VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', (
+                vacancy['vacancy_id'],
+                vacancy['vacancy_name'],
+                vacancy['employer_id'],
+                vacancy['employer_name'],
+                vacancy['salary_from'],
+                vacancy['salary_to'],
+                vacancy['currency'],
+                vacancy['url']
+
+            ))
+    conn.commit()
+    conn.close()
+
 
 
 # employer = ['Сбер', 'Яндекс', 'Альфа-Банк', 'VK', 'Тинькофф', 'Газпром нефть', 'МТС', 'Tele2', 'X5 Group', 'Ozon']
 employer_id = ['3529', '1740', '80', '15478', '78638', '39305', '3776', '4219', '4233', '2180']
-emp = get_employers_data(employer_id)
-vac = get_vacancies_data(employer_id)
-print(vac)
+
+emp = get_employers_data(employer_id) # json_employers
+vac = get_vacancies_data(employer_id) # json_vacancies
+#print(emp)
+#print(vac)
+
+params = config()
+save_emp = save_data_to_employers(emp, params)
+save_vac = save_data_to_vacancies(vac, params)
+
